@@ -3,7 +3,6 @@ import yaml
 
 from typing import List
 from itertools import zip_longest
-from client import BaseClient
 from gmusic import GoogleMusicClient
 from domain import Artist, ArtistDetails
 
@@ -52,7 +51,10 @@ def main():
     logger().info(f"Loading top {number_of_top_tracks} for final artists")
     tracks = client.load_top_tracks_of_artists(final_artists, n=number_of_top_tracks)
     logger().info(f"Loaded {len(tracks)} tracks")
-    # TODO Create Playlist
+
+    logger().info(f"Creating playlist and adding tracks")
+    playlist = client.create_playlist("Generated Summer Breeze 2019")
+    client.add_tracks_to_playlist(playlist, tracks)
 
 
 def resolve_conflict(name: str, artists_details: List[ArtistDetails]) -> Artist:

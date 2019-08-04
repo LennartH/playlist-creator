@@ -49,6 +49,13 @@ class GoogleMusicClient(BaseClient):
         else:
             return []
 
+    def create_playlist(self, name: str, description: str = None, public=False) -> Playlist:
+        playlist_id = self.client.create_playlist(name=name, description=description, public=public)
+        return Playlist(id=playlist_id, name=name, description=description, is_public=public)
+
+    def add_tracks_to_playlist(self, playlist: Playlist, tracks: List[Track]):
+        self.client.add_songs_to_playlist(playlist.id, [track.id for track in tracks])
+
     @staticmethod
     def _image_url_from_raw_data(raw_art_refs: List[dict]) -> str:
         best_raw_art_ref = None
@@ -69,7 +76,7 @@ class GoogleMusicClient(BaseClient):
     @staticmethod
     def _track_from_raw_data(raw_track: dict) -> Track:
         return Track(
-            id=raw_track["nid"],
+            id=raw_track["storeId"],
             name=raw_track["title"],
             genre=raw_track["genre"] if "genre" in raw_track else None,
             duration=dt.timedelta(milliseconds=int(raw_track["durationMillis"]))

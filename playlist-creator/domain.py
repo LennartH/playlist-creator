@@ -3,7 +3,7 @@ import datetime as dt
 from typing import List, Set, Optional
 from dataclasses import dataclass
 
-__all__ = ["Artist", "ArtistDetails", "Album", "Track"]
+__all__ = ["Artist", "ArtistDetails", "Album", "Playlist", "Track"]
 
 
 @dataclass(frozen=True)
@@ -53,6 +53,14 @@ class Album:
 
     def __str__(self):
         return f"{self.year} - {self.name}"
+
+
+@dataclass(frozen=True)
+class Playlist:
+    id: str
+    name: str
+    description: Optional[str]
+    is_public: bool
 
 
 @dataclass(frozen=True)

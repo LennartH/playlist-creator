@@ -36,3 +36,11 @@ class BaseClient(WithLogger, metaclass=ABCMeta):
     @abstractmethod
     def load_top_tracks_of_artist(self, artist: Artist, n: int) -> List[Track]:
         pass
+
+    @abstractmethod
+    def create_playlist(self, name: str, description: str = None, public=False) -> Playlist:
+        pass
+
+    @abstractmethod
+    def add_tracks_to_playlist(self, playlist: Playlist, tracks: List[Track]):
+        pass
