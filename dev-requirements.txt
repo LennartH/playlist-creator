@@ -18,6 +18,7 @@ pickleshare==0.7.5        # via ipython
 prompt-toolkit==2.0.9     # via ipython
 pygments==2.4.2           # via ipython
 python-dateutil==2.8.0    # via jupyter-client
+pyyaml==5.1.2
 pyzmq==18.0.2             # via jupyter-client
 six==1.12.0               # via prompt-toolkit, python-dateutil, traitlets
 tornado==6.0.3            # via ipykernel, jupyter-client

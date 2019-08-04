@@ -1,0 +1,30 @@
+version: 1
+
+formatters:
+  normal:
+    style: '{'
+    format: '[{asctime}] {levelname: >8} - {name}: {message}'
+    datefmt: '%H:%M:%S'
+  message_only:
+    style: '{'
+    format: '[{asctime}] {message}'
+    datefmt: '%H:%M:%S'
+  threaded:
+    style: '{'
+    format: '[{asctime}] {levelname: >8} - {threadName} - {name}: {message}'
+    datefmt: '%H:%M:%S'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: message_only
+    stream: ext://sys.stdout
+
+loggers:
+  gmusicapi:
+    level: WARNING
+
+root:
+  level: DEBUG
+  handlers: [console]
