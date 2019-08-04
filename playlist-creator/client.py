@@ -16,6 +16,23 @@ class BaseClient(WithLogger, metaclass=ABCMeta):
     def _query_artist(self, name: str) -> List[Artist]:
         pass
 
+    def load_artists_details(self, artists: List[Artist]) -> List[ArtistDetails]:
+        # TODO Try-Catch
+        return [self.load_artist_details(artist) for artist in artists]
+
     @abstractmethod
     def load_artist_details(self, artist: Artist) -> ArtistDetails:
+        pass
+
+    def load_top_tracks_of_artists(self, artists: List[Artist], n: int) -> List[Track]:
+        tracks = []
+        for artist in artists:
+            try:
+                tracks.extend(self.load_top_tracks_of_artist(artist, n))
+            except:
+                self.logger().exception(f"Error loading top {n} tracks of {artist}")
+        return tracks
+
+    @abstractmethod
+    def load_top_tracks_of_artist(self, artist: Artist, n: int) -> List[Track]:
         pass

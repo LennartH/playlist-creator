@@ -8,8 +8,8 @@ __all__ = ["Artist", "ArtistDetails", "Album", "Track"]
 
 @dataclass(frozen=True)
 class Artist:
-    name: str
     id: str
+    name: str
 
     def __str__(self):
         return self.name
@@ -57,6 +57,7 @@ class Album:
 
 @dataclass(frozen=True)
 class Track:
+    id: str
     name: str
     genre: Optional[str]
     duration: dt.timedelta

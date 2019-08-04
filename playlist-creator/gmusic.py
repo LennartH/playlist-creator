@@ -18,9 +18,12 @@ class GoogleMusicClient(BaseClient):
     def authenticate(self, device_id: str = None):
         self.client.oauth_login(device_id if device_id else Mobileclient.FROM_MAC_ADDRESS)
 
+    def is_authenticated(self) -> bool:
+        return self.client.is_authenticated()
+
     def _query_artist(self, name: str) -> List[Artist]:
         raw_artists = self.client.search(name)["artist_hits"]
-        return [Artist(name=raw["artist"]["name"], id=raw["artist"]["artistId"]) for raw in raw_artists]
+        return [Artist(id=raw["artist"]["artistId"], name=raw["artist"]["name"]) for raw in raw_artists]
 
     def load_artist_details(self, artist: Artist) -> ArtistDetails:
         raw_artist_info = self.client.get_artist_info(artist.id, include_albums=True, max_top_tracks=0, max_rel_artist=0)
@@ -38,6 +41,13 @@ class GoogleMusicClient(BaseClient):
         else:
             image_url = None
         return ArtistDetails(artist=artist, albums=albums, image_url=image_url)
+
+    def load_top_tracks_of_artist(self, artist: Artist, n: int) -> List[Track]:
+        raw_artist_info = self.client.get_artist_info(artist.id, include_albums=False, max_top_tracks=n, max_rel_artist=0)
+        if "topTracks" in raw_artist_info:
+            return [self._track_from_raw_data(raw_track) for raw_track in raw_artist_info["topTracks"]]
+        else:
+            return []
 
     @staticmethod
     def _image_url_from_raw_data(raw_art_refs: List[dict]) -> str:
@@ -59,6 +69,7 @@ class GoogleMusicClient(BaseClient):
     @staticmethod
     def _track_from_raw_data(raw_track: dict) -> Track:
         return Track(
+            id=raw_track["nid"],
             name=raw_track["title"],
             genre=raw_track["genre"] if "genre" in raw_track else None,
             duration=dt.timedelta(milliseconds=int(raw_track["durationMillis"]))

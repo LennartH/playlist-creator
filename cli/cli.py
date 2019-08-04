@@ -31,14 +31,11 @@ def main():
             ambiguous_artists[name] = artists
 
     logger().warning(f"The following artists could not be found: {', '.join(missing_artists)}")
-    logger().info(f"The following artists where unambiguous: {', '.join(map(str, unambiguous_artists))}")
-    logger().info(f"The following artists where ambiguous and have to be resolved manually: {', '.join(ambiguous_artists.keys())}")
+    logger().info(f"{len(unambiguous_artists)} artists where unambiguous: {', '.join(map(str, unambiguous_artists))}")
+    logger().info(f"{len(ambiguous_artists)} artists where ambiguous and have to be resolved manually: {', '.join(ambiguous_artists.keys())}")
 
     logger().info("Loading details of ambiguous artists")
-    ambiguous_artists = {
-        name: [client.load_artist_details(artist) for artist in artists]
-        for name, artists in ambiguous_artists.items()
-    }
+    ambiguous_artists = {name: client.load_artists_details(artists) for name, artists in ambiguous_artists.items()}
 
     final_artists = list(unambiguous_artists)
     for name, artists_details in ambiguous_artists.items():
@@ -47,6 +44,15 @@ def main():
             final_artists.append(selected_artist)
     final_artists.sort(key=lambda a: a.name)
     logger().info(f"Final artist list to create the playlist for: {', '.join(map(str, final_artists))}")
+
+    if not client.is_authenticated():
+        client.authenticate()
+
+    number_of_top_tracks = 5
+    logger().info(f"Loading top {number_of_top_tracks} for final artists")
+    tracks = client.load_top_tracks_of_artists(final_artists, n=number_of_top_tracks)
+    logger().info(f"Loaded {len(tracks)} tracks")
+    # TODO Create Playlist
 
 
 def resolve_conflict(name: str, artists_details: List[ArtistDetails]) -> Artist:
