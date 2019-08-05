@@ -7,14 +7,17 @@ from gmusic import GoogleMusicClient
 from domain import Artist, ArtistDetails
 
 
+# TODO Parameters for artists and number of top tracks (and other context)
 def main():
     logger().info("Starting session")
+    # TODO Use environment variables for authentication
     client = GoogleMusicClient()
     client.authenticate()
 
     # with open("few_artists.txt") as f:
     with open("artists.txt") as f:
         artist_names = [line.strip() for line in f.readlines() if line]
+    # artist_names = ["Brainstorm"]
     logger().info(f"Searching for artists: {', '.join(artist_names)}")
     missing_artists = []
     unambiguous_artists = []
@@ -38,17 +41,24 @@ def main():
 
     final_artists = list(unambiguous_artists)
     for name, artists_details in ambiguous_artists.items():
-        selected_artist = resolve_conflict(name, artists_details)
-        if selected_artist:
-            final_artists.append(selected_artist)
+        cleaned_artists_details = [artist_details for artist_details in artists_details if artist_details.albums]
+        if cleaned_artists_details:
+            # TODO Handle length == 1
+            selected_artist = resolve_conflict(name, cleaned_artists_details)
+            if selected_artist:
+                final_artists.append(selected_artist)
+        else:
+            logger().info(f"Skipping {name}, no artist with albums could be found")
     final_artists.sort(key=lambda a: a.name)
     logger().info(f"Final artist list to create the playlist for: {', '.join(map(str, final_artists))}")
 
-    if not client.is_authenticated():
-        client.authenticate()
+    # Refresh session
+    client = GoogleMusicClient()
+    client.authenticate()
 
     number_of_top_tracks = 5
     logger().info(f"Loading top {number_of_top_tracks} for final artists")
+    # TODO Allow multiple artists for one name
     tracks = client.load_top_tracks_of_artists(final_artists, n=number_of_top_tracks)
     logger().info(f"Loaded {len(tracks)} tracks")
 
@@ -59,6 +69,7 @@ def main():
 
 def resolve_conflict(name: str, artists_details: List[ArtistDetails]) -> Artist:
     artists_output = "\n".join(f"\t{i+1}) {artist.name} - {', '.join(artist.genres)}" for i, artist in enumerate(artists_details))
+    # TODO Allow Multiselection
     logger().info(f"Choose an artist for {name} (number for selection, 'a'/'albums' to display a table of albums or 0 to skip):\n{artists_output}")
     selection = None
     while selection is None:

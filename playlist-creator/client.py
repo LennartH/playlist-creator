@@ -4,6 +4,8 @@ from util import WithLogger
 from domain import *
 
 
+# TODO Parallelization
+# TODO Add context (e.g. to filter for genre, ...)
 class BaseClient(WithLogger, metaclass=ABCMeta):
 
     def search_artist(self, name: str) -> List[Artist]:
@@ -33,6 +35,7 @@ class BaseClient(WithLogger, metaclass=ABCMeta):
                 self.logger().exception(f"Error loading top {n} tracks of {artist}")
         return tracks
 
+    # TODO USe heuristics to get "better" top tracks?
     @abstractmethod
     def load_top_tracks_of_artist(self, artist: Artist, n: int) -> List[Track]:
         pass

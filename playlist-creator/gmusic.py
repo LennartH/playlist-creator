@@ -27,8 +27,8 @@ class GoogleMusicClient(BaseClient):
 
     def load_artist_details(self, artist: Artist) -> ArtistDetails:
         raw_artist_info = self.client.get_artist_info(artist.id, include_albums=True, max_top_tracks=0, max_rel_artist=0)
-        # TODO How to handle an artist without albums?
         if "albums" in raw_artist_info:
+            # TODO Parallelization
             raw_album_infos = [self.client.get_album_info(raw_album["albumId"]) for raw_album in raw_artist_info["albums"]]
         else:
             raw_album_infos = []
