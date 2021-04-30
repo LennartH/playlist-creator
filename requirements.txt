@@ -29,7 +29,7 @@ requests==2.22.0          # via gmusicapi, gpsoauth, mechanicalsoup
 rsa==4.0                  # via oauth2client
 six==1.12.0               # via gmusicapi, mechanicalsoup, mock, oauth2client, protobuf, python-dateutil
 soupsieve==1.9.2          # via beautifulsoup4
-urllib3==1.25.3           # via requests
+urllib3==1.25.8           # via requests
 validictory==1.1.2        # via gmusicapi
 
 # The following packages are considered to be unsafe in a requirements file:
