@@ -6,7 +6,7 @@
 #
 appdirs==1.4.3            # via gmusicapi
 beautifulsoup4==4.8.0     # via mechanicalsoup
-certifi==2019.6.16        # via requests
+certifi==2022.12.7        # via requests
 chardet==3.0.4            # via requests
 decorator==4.4.0          # via gmusicapi
 future==0.17.1            # via gmusicapi
